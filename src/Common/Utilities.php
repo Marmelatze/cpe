@@ -1,7 +1,7 @@
 <?php
 namespace PacificSec\CPE\Common;
 
-use \Exception;
+use PacificSec\CPE\Exception\ValidationException;
 
 /**
  * A collection of utility functions for use with the matching and
@@ -110,12 +110,12 @@ class Utilities {
     public static function validateURI($in) {
         // make sure uri starts with cpe:/
         if (strpos(strtolower($in), "cpe:/") !== 0) {
-            throw new Exception("Error: URI must start with 'cpe:/'.  Given: " . $in, 0);
+            throw new ValidationException("Error: URI must start with 'cpe:/'.  Given: " . $in, 0);
         }
         // make sure uri doesn't contain more than 7 colons
         $count = sizeof(explode(":", $in));
         if ($count > 8) {
-            throw new Exception("Error parsing URI.  Found " . ($count - 8) . " extra components in: " . $in, 0);
+            throw new ValidationException("Error parsing URI.  Found " . ($count - 8) . " extra components in: " . $in, 0);
         }
     }
 
@@ -131,7 +131,7 @@ class Utilities {
      */
     public static function validateFS($in) {
         if (strpos(strtolower($in), "cpe:2.3:") !== 0) {
-            throw new Exception("Error: Formatted String must start with \"cpe:2.3\". Given: " . $in, 0);
+            throw new ValidationException("Error: Formatted String must start with \"cpe:2.3\". Given: " . $in, 0);
         }
 
         $count = 0;
@@ -141,7 +141,7 @@ class Utilities {
                     $count++;
                 }
                 if (($i+1) < strlen($in) && substr($in, $i+1, 1) == ":"){
-                    throw new Exception("Error parsing formatted string.  Found empty component", 0);
+                    throw new ValidationException("Error parsing formatted string.  Found empty component", 0);
                 }
             }
         }
@@ -152,7 +152,7 @@ class Utilities {
                 $s = $s . "s";
             }
             $s = $s . " in: " . $in;
-            throw new Exception($s, 0);
+            throw new ValidationException($s, 0);
         }
         if ($count < 12){
             $missing = 12 - $count;
@@ -160,7 +160,7 @@ class Utilities {
             if ($missing > 1){
                 $s = $s . "s";
             }
-            throw new Exception($s, 0);
+            throw new ValidationException($s, 0);
         }
     }
 }
